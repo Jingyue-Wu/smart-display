@@ -38,5 +38,4 @@ void loop() {
         lcd.write(data);
     }
   }
-
 }

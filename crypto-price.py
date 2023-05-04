@@ -17,11 +17,15 @@ red = "}"
 row1 = "["
 row2 = "]"
 
+# ----------------------------Options:----------------------------
 # Search for any coin
 parameters = {"symbol": "BTC,ETH,ADA,SOL,DOT,ALGO", "convert": "USD"}
 
 # Display Weather and time?
 displayWeatherTime = True
+
+# LED on?
+ledOn = True
 
 
 def getWeather(key):
@@ -50,11 +54,11 @@ def displayTimeWeather():
 
     time = f"{hour}:{min}"
 
+    # Display Date instead of humidity
     # DD/MM/YYYY format
-
-    day = "%02d" % datetime.date.today().day
-    month = "%02d" % datetime.date.today().month
-    date = f"{day}-{month}-{datetime.date.today().year}"
+    # day = "%02d" % datetime.date.today().day
+    # month = "%02d" % datetime.date.today().month
+    # date = f"{day}-{month}-{datetime.date.today().year}"
 
     r1 = f"{time}"
     list.append(r1)
@@ -68,7 +72,6 @@ def displayTimeWeather():
 
 
 class CMC:
-
     def __init__(self, key):
         self.apiurl = "https://pro-api.coinmarketcap.com"
         self.headers = {
@@ -111,11 +114,13 @@ def sendData(dataList):
         if i == len(dataList):
             i = 0
 
-        if(len(dataList[i][0]) < 4):
-            if float(dataList[i][2]) > 0:
-                write(green)
-            else:
-                write(red)
+        if((len(dataList[i][0]) < 4)):
+
+            if ledOn:
+                if float(dataList[i][2]) > 0:
+                    write(green)
+                else:
+                    write(red)
 
             write(clear)
             time.sleep(.1)
