@@ -1,9 +1,9 @@
 import requests
 from requests import Session
 import constants
-import pprint
 import serial
 import time
+import datetime
 
 # Plug in arduino into serial before running file
 ser = serial.Serial(constants.USB_SERIAL_PORT, 9600)
@@ -11,27 +11,69 @@ ser = serial.Serial(constants.USB_SERIAL_PORT, 9600)
 def write(data):
     ser.write(data.encode())
 
-#Write Codes
 clear = "/"
 green = "{"
 red = "}"
 row1 = "["
 row2 = "]"
 
-parameters ={
-    "symbol": "BTC,ETH,ADA,SOL,DOT,ALGO",
-    "convert": "USD"
-}
+# Search for any coin
+parameters = {"symbol": "BTC,ETH,ADA,SOL,DOT,ALGO", "convert": "USD"}
 
-# https://coinmarketcap.com/api/documentation/v1
+# Display Weather and time?
+displayWeatherTime = True
+
+
+def getWeather(key):
+    apiurl = "http://api.weatherapi.com/v1"
+    location = "Toronto"
+    url = f"{apiurl}/current.json?key={key}&q={location}&aqi=no"
+    response = requests.get(url).json()
+
+    tempC = response["current"]["temp_c"]
+    condition = response["current"]["condition"]["text"]
+    weather = f"{int(tempC)}C {condition}"
+
+    humidity = response["current"]["humidity"]
+    humidString = f"Humidity: {humidity}%"
+
+    return([location, weather, humidString])
+     
+
+
+def displayTimeWeather():
+    weatherData = getWeather(constants.WEATHER_API_KEY)
+
+    list = [weatherData[0]]
+    hour = "%02d" % datetime.datetime.now().hour
+    min = "%02d" % datetime.datetime.now().minute
+
+    time = f"{hour}:{min}"
+
+    # DD/MM/YYYY format
+
+    day = "%02d" % datetime.date.today().day
+    month = "%02d" % datetime.date.today().month
+    date = f"{day}-{month}-{datetime.date.today().year}"
+
+    r1 = f"{time}"
+    list.append(r1)
+
+    r2 = weatherData[1]
+    list.append(r2)
+
+    r3 = weatherData[2]
+    list.append(r3)
+    return list
 
 
 class CMC:
+
     def __init__(self, key):
         self.apiurl = "https://pro-api.coinmarketcap.com"
         self.headers = {
-            'Accepts': 'application/json',
-            'X-CMC_PRO_API_KEY': key,
+            "Accepts": "application/json",
+            "X-CMC_PRO_API_KEY": key,
         }
         self.session = Session()
         self.session.headers.update(self.headers)
@@ -40,55 +82,80 @@ class CMC:
         url = self.apiurl + "/v1/cryptocurrency/quotes/latest"
         request = self.session.get(url, params=parameters)
 
-        list = []
-        btc = ["BTC", ("%.2f" % request.json()["data"]["BTC"]["quote"]["USD"]["price"]), ("%.2f" % request.json()["data"]["BTC"]["quote"]["USD"]["percent_change_1h"]), ("%.2f" % request.json()["data"]["BTC"]["quote"]["USD"]["percent_change_7d"])]
-        list.append(btc)
-        eth = ["ETH", ("%.2f" % request.json()["data"]["ETH"]["quote"]["USD"]["price"]), ("%.2f" % request.json()["data"]["ETH"]["quote"]["USD"]["percent_change_1h"]), ("%.2f" % request.json()["data"]["ETH"]["quote"]["USD"]["percent_change_7d"])]
-        list.append(eth)
-        ada = ["ADA", ("%.2f" % request.json()["data"]["ADA"]["quote"]["USD"]["price"]), ("%.2f" % request.json()["data"]["ADA"]["quote"]["USD"]["percent_change_1h"]), ("%.2f" % request.json()["data"]["ADA"]["quote"]["USD"]["percent_change_7d"])]
-        list.append(ada)
-        sol = ["SOL", ("%.2f" % request.json()["data"]["SOL"]["quote"]["USD"]["price"]), ("%.2f" % request.json()["data"]["SOL"]["quote"]["USD"]["percent_change_1h"]), ("%.2f" % request.json()["data"]["SOL"]["quote"]["USD"]["percent_change_7d"])]
-        list.append(sol)
-        dot = ["DOT", ("%.2f" % request.json()["data"]["DOT"]["quote"]["USD"]["price"]), ("%.2f" % request.json()["data"]["DOT"]["quote"]["USD"]["percent_change_1h"]), ("%.2f" % request.json()["data"]["DOT"]["quote"]["USD"]["percent_change_7d"])]
-        list.append(dot)
-        algo = ["ALGO", ("%.2f" % request.json()["data"]["ALGO"]["quote"]["USD"]["price"]), ("%.2f" % request.json()["data"]["ALGO"]["quote"]["USD"]["percent_change_1h"]), ("%.2f" % request.json()["data"]["ALGO"]["quote"]["USD"]["percent_change_7d"])]
-        list.append(algo)
-        return list
-    
-def sendData(dataList):
+        def getData(coin):
+            data = [
+                coin,
+                ("%.2f" %
+                 request.json()["data"][coin]["quote"]["USD"]["price"]),
+                ("%.2f" % request.json()["data"][coin]["quote"]["USD"]
+                 ["percent_change_1h"]),
+                ("%.2f" % request.json()["data"][coin]["quote"]["USD"]
+                 ["percent_change_7d"])
+            ]
+            return data
 
-    # dataList format: [[symbol, price, percentChange1h, percentChange7d], [symbol, price, percentChange1h, percentChange7d], ...]
+        coinList = parameters["symbol"].split(",")
+        list = []
+        if displayWeatherTime == True:
+            list.append(displayTimeWeather())
+
+        for i in coinList:
+            list.append(getData(i))
+        return list
+
+
+def sendData(dataList):
+    # dataList format: [[symbol, price, percentChange1h, percentChange7d], ...]
 
     for i in range(len(dataList)):
         if i == len(dataList):
             i = 0
-        if float(dataList[i][3]) > 0:
+
+        if(len(dataList[i][0]) < 4):
+            if float(dataList[i][2]) > 0:
+                write(green)
+            else:
+                write(red)
+
+            write(clear)
+            time.sleep(.1)
+            write(row1)
+            write(f"{dataList[i][0]}: ${dataList[i][1]}")
+
+            write(row2)
+            write(f"Hour: {dataList[i][2]}%")
+
+            time.sleep(2)
+            write(row2)
+            write("")
+            time.sleep(3)
+            write(f"Week: {dataList[i][3]}%")
+
+        else: 
             write(green)
-        else:
-            write(red)
-        print(i)
-        write(clear)
-        time.sleep(.1)
-        write(row1)
-        write(f"{dataList[i][0]}: ${dataList[i][1]}")
-        
-        write(row2)
-        write(f"Hour: {dataList[i][2]}%")
+            write(clear)
+            time.sleep(.1)
+            write(row1)
+            write(f"{dataList[i][0]}  {dataList[i][1]}")
 
-        time.sleep(0.5) 
-        write(row2)
-        write("")
-        time.sleep(3)   
-        write(f"Week: {dataList[i][3]}%")
+            write(row2)
+            write(f"{dataList[i][2]}")
 
+            time.sleep(3)
+            write(row2)
+            write("")
+            time.sleep(4)
+            write(f"{dataList[i][3]}")
 
         time.sleep(2)
-    
+
 
 def main():
-    cmc = CMC(constants.API_KEY)
+    cmc = CMC(constants.CMC_API_KEY)
+    print("Running!")
     while True:
-        pprint.pprint(cmc.getPrice(parameters))
         sendData(cmc.getPrice(parameters))
         time.sleep(2)
+
+
 main()
