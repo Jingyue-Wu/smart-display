@@ -1,1 +1,2 @@
-API_KEY = ""
+API_KEY = "API_KEY_HERE"
+USB_SERIAL_PORT = "PORT_HERE" # Example: "COM6"
