@@ -114,7 +114,7 @@ def sendData(dataList):
         if i == len(dataList):
             i = 0
 
-        if((len(dataList[i][0]) < 4)):
+        if((len(dataList[i][0]) < 5)):
 
             if ledOn:
                 if float(dataList[i][2]) > 0:
