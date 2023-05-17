@@ -34,7 +34,7 @@ Connect to ticker over USB and update and install necessary packages
 pip install pyserial
 pip install DateTime
 ```
-Install drivers CH340 drivers: [CH341SER](http://www.wch-ic.com/downloads/CH341SER_ZIP.html)
+Install CH340 USB drivers: [CH341SER](http://www.wch-ic.com/downloads/CH341SER_ZIP.html)
 
 Flash microcontroller with `crypto-ticker.ino` using Arduino IDE
 
