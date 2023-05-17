@@ -22,7 +22,7 @@ Instructions assume host device is connected to the Internet, running `Git`, `pi
 ![circuit](https://github.com/Jingyue-Wu/crypto-ticker/assets/75918217/22158f94-fce2-49ef-844f-1169b90822d4)
 
 ## Compact Case
-STL files for 3D printing are provided `hardware`. Case was designed for an Arduino Nano and soldering may be required to fit all hardware components inside. 
+STL files for 3D printing are provided in `hardware` folder. Case was designed for an Arduino Nano and soldering may be required to fit all hardware components inside. 
 
 # Installation
 
