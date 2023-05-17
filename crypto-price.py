@@ -30,7 +30,7 @@ ledOn = True
 
 def getWeather(key):
     apiurl = "http://api.weatherapi.com/v1"
-    location = constants.WETHER_LOCATION
+    location = constants.WEATHER_LOCATION
     url = f"{apiurl}/current.json?key={key}&q={location}&aqi=no"
     response = requests.get(url).json()
 
