@@ -1,6 +1,6 @@
 # Cryptocurrency Ticker and Smart Display
 
-A sleek and informative smart dispaly that shows local weather and real-time market trends for your favourite coins. Can be powered through USB by any device with an Internet connection and runs `python3`. The Python script runs on host device and forwards live data to Arduino (ATmega328) through USB serial. This system operates without the need of a WiFi module. 
+A sleek and informative smart display that shows local weather and real-time market trends for your favourite coins. Can be powered through USB by any device with an Internet connection and runs `python3`. The Python script runs on host device and forwards live data to Arduino (ATmega328) through USB serial. This system operates without the need of a WiFi module. 
 
 Supports all cryptocurrencies on [CoinMarketCap](https://coinmarketcap.com/api/documentation/v1/)
 
