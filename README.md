@@ -1,8 +1,8 @@
-# Cryptocurrency Ticker and Smart Display
+# Compact Smart Display
 
-A sleek and informative smart display that shows local weather and real-time market trends for your favourite coins. Can be powered through USB by any device with an Internet connection and runs `python3`. The Python script runs on host device and forwards live data to Arduino (ATmega328) through USB serial. This system operates without the need of a WiFi module. 
+A sleek and informative screen that shows local weather and real-time market trends for your favourite assets. Can be powered through USB by any device with an Internet connection and runs `python3`. The Python script runs on host device and forwards live data to Arduino (ATmega328) through USB serial. This system operates without the need of a WiFi module. 
 
-Supports all cryptocurrencies on [CoinMarketCap](https://coinmarketcap.com/api/documentation/v1/)
+Supports all currencies on [CoinMarketCap](https://coinmarketcap.com/api/documentation/v1/)
 
 ![DSC_1494](https://github.com/Jingyue-Wu/crypto-ticker/assets/75918217/44a73b64-1537-47d7-bf5f-6497da128f96)
 ![DSC_1473](https://github.com/Jingyue-Wu/crypto-ticker/assets/75918217/fd9af823-76b9-4ad6-8f0e-d0fb51f99b95)
@@ -41,9 +41,9 @@ Flash microcontroller with `crypto-ticker.ino` using Arduino IDE
 
 # Configure Constants
 
-Obtain your API keys from:
-[CoinMarketCap](https://coinmarketcap.com/api/documentation/v1/)
+Obtain your API keys from:\
 [Weather API](https://www.weatherapi.com/)
+[CoinMarketCap](https://coinmarketcap.com/api/documentation/v1/)
 
 Input API keys, USB serial port and your location in `constants.py`
 
